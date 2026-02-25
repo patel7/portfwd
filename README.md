@@ -56,7 +56,8 @@ forward:
     to:   10.2.0.1:5101
 ```
 ```yaml
-  # Forward incoming UDP traffic from one port to another
+# Forward incoming UDP traffic from one port to another
+forward:
   - protocol: udp
     from: 127.0.0.1:5300
     to:   10.2.0.1:5301
