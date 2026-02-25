@@ -8,24 +8,24 @@ import (
 	"github.com/libp2p/go-reuseport"
 )
 
-func tcpForward(protocol string, from string, to string) {
-	listener, err := reuseport.Listen(protocol, to)
+func tcpForward(forward ForwardStruct) {
+	listener, err := reuseport.Listen(forward.Protocol, forward.From)
 
 	if err != nil {
-		log.Printf("The connection failed: %v", err)
+		log.Fatal("Failed to listen on TCP port/address %s : %v", forward.From, err)
 	}
 
 	for {
 		conn, err := listener.Accept()
 
 		if err != nil {
-			log.Printf("The connection was not accepted: %v", err)
+			log.Fatal("The incoming TCP connection could not be accepted: %v", err)
 		}
 
-		client, err := net.Dial(protocol, from)
+		client, err := net.Dial(forward.Protocol, forward.To)
 
 		if err != nil {
-			log.Printf("The connection failed: %v", err)
+			log.Fatal("Outgoing TCP connection failed: %v", err)
 			conn.Close()
 			continue
 		}
