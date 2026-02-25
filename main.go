@@ -19,7 +19,7 @@ var (
 type ForwardStruct struct {
 	Protocol string   `yaml:"protocol"`
 	From     string   `yaml:"from"`
-	To       []string `yaml:"to"`
+	To       string   `yaml:"to"`
 }
 
 type ConfigStruct struct {
@@ -31,6 +31,7 @@ func main() {
 	configFilePath := os.Getenv("PORTFWD_CONFIG_FILE_PATH")
 	log.Printf("Loading configuration file located at %s", configFilePath)
 	configFile, err := os.ReadFile(configFilePath)
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,16 +47,12 @@ func main() {
 
 	for _, forward = range config.Forward {
 		switch forward.Protocol {
-		case "tcp", "tcp4", "tcp6":
-			for _, to := range forward.To {
-				go tcpForward(forward.Protocol, forward.From, to)
-				log.Printf("Forwarding TCP traffic between %s and %s.", forward.From, to)
-			}
-		case "udp", "udp4", "udp6":
-			go udpForward(forward)
-			for _, to := range forward.To {
-				log.Printf("Forwarding UDP traffic from %s to %s.", forward.From, to)
-			}
+			case "tcp", "tcp4", "tcp6":
+				go tcpForward(forward)
+				log.Printf("Forwarding incoming TCP connections on %s to %s.", forward.From, forward.To)
+			case "udp", "udp4", "udp6":
+				go udpForward(forward)
+				log.Printf("Forwarding incoming UDP traffic on %s to %s.", forward.From, forward.To)
 		}
 	}
 
