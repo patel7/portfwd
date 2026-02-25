@@ -34,25 +34,32 @@ Quite simply!
 
 ## Configuration
 
-Here is an example of a configuration (YAML): 
+Here are some examples of valid configurations (YAML): 
 ```yaml
+# Forward incoming TCP connections from one port to another
 forward:
-  # Forward TCP traffic from one port to a single other
   - protocol: tcp
     from: 127.0.0.1:5100
-    to: [10.2.0.1:5101]
-  # Forward of TCP traffic from one port to several others
+    to:   10.2.0.1:5101
+```
+```yaml
+# Forward incoming TCP connections from multiple different ports and network interfaces to the same destination
+forward:
   - protocol: tcp
-    from: 127.0.0.1:5200
-    to: [127.0.0.1:5201, 10.2.0.1:5202]
-  # Forward UDP traffic from one port to a single other
+    from: 127.0.0.1:5201
+    to:   10.2.0.1:5101
+  - protocol: tcp
+    from: 127.0.0.1:5202
+    to:   10.2.0.1:5101
+  - protocol: tcp
+    from: 192.168.0.65:5203
+    to:   10.2.0.1:5101
+```
+```yaml
+  # Forward incoming UDP traffic from one port to another
   - protocol: udp
     from: 127.0.0.1:5300
-    to: [10.2.0.1:5301]
-  # Forward of UDP traffic from one port to several others
-  - protocol: udp
-    from: 127.0.0.1:5400
-    to: [127.0.0.1:5401, 10.2.0.1:5402]
+    to:   10.2.0.1:5301
 ```
 
 ## Run
